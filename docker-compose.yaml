@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+
+  web:
+    build: .
+    ports:
+      - "1234:3000"
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 2020:8080
