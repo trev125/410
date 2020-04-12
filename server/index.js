@@ -1,4 +1,3 @@
-const express = require('express')
 const character = require('../controller/character')
 const user = require('../controller/user')
 const findUser = require('../controller/findUser')
@@ -9,6 +8,7 @@ const answer = require('../controller/answer')
 const item = require('../controller/item')
 const bodyParser = require('body-parser')
 
+const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
