@@ -13,12 +13,9 @@
         <logo />
         <vuetify-logo />
       </div> -->
-      <v-card>
-        <v-card-title class="headline" v-if="!hasCharacter">
+      <v-card v-if="!hasCharacter">
+        <v-card-title class="headline">
           Character creation
-        </v-card-title>
-        <v-card-title class="headline" v-else>
-          Character stats
         </v-card-title>
         <v-card-subtitle>Total Points used: {{this.totalPointsUsed}} out of 25</v-card-subtitle>
         <v-col cols="12" sm="6">
@@ -150,6 +147,30 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-card v-else>
+        <v-card-title class="headline">
+          Character Stats
+        </v-card-title>
+        <v-card-subtitle>Character Name: {{savedCharacter[0].name}}</v-card-subtitle>
+         <v-card-text>
+          <v-row>
+            <v-col cols="6">
+              Strength: {{savedCharacter[0].strength}}/10
+            </v-col>
+            <v-col cols="6">
+              Dexterity: {{savedCharacter[0].dexterity}}/10
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              Speech: {{savedCharacter[0].speech}}/10
+            </v-col>
+            <v-col cols="6">
+              Intelligence: {{savedCharacter[0].intelligence}}/10
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </v-col>
   </v-layout>
 </template>
@@ -170,6 +191,7 @@ export default {
       submitWithExtraPoints: false,
       submitWithAllPoints: false,
       hasUsedAllPoints: false,
+      savedCharacter: [],
     }
   },
   methods: {
@@ -202,7 +224,7 @@ export default {
       if(this.characterName == ''){
         this.characterName = this.generateName()
       }
-      console.log(this.strengthSlider, this.dexSlider, this.speechSlider,  this.intelSlider, this.characterName);
+      //console.log(this.strengthSlider, this.dexSlider, this.speechSlider,  this.intelSlider, this.characterName);
       let data = [{
         "name": this.characterName, 
         "dexterity": this.dexSlider, 
@@ -210,10 +232,15 @@ export default {
         "intelligence": this.intelSlider, 
         "strength": this.strengthSlider
       }];
-      console.log(JSON.stringify(data));
+      this.savedCharacter = data;
+      //TODO: call api here
+
+      //console.log(JSON.stringify(this.savedCharacter));
+      //reset data
       this.strengthSlider = this.intelSlider = this.dexSlider = this.speechSlider = 5;
       this.totalPointsUsed = 20;
       this.characterName = '';
+      this.hasCharacter = true;
     },
     generateName: function(){
       var name1 = 
