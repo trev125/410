@@ -13,12 +13,9 @@
         <logo />
         <vuetify-logo />
       </div> -->
-      <v-card>
-        <v-card-title class="headline" v-if="!hasCharacter">
+      <v-card v-if="!hasCharacter">
+        <v-card-title class="headline">
           Character creation
-        </v-card-title>
-        <v-card-title class="headline" v-else>
-          Character stats
         </v-card-title>
         <v-card-subtitle>Total Points used: {{this.totalPointsUsed}} out of 25</v-card-subtitle>
         <v-col cols="12" sm="6">
@@ -150,11 +147,49 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-card v-else>
+        <v-card-title class="display-1">
+          Character Stats
+        </v-card-title>
+        <v-card-subtitle class="title font-weight-light">Character Name: {{savedCharacter[0].name}}</v-card-subtitle>
+         <v-card-text>
+          <v-row>
+            <v-col cols="6">
+              <p>
+                <v-icon x-large>mdi-arm-flex</v-icon>
+                Strength: {{savedCharacter[0].strength}}/10
+              </p>
+            </v-col>
+            <v-col cols="6">
+              <p>
+                <v-icon x-large>mdi-hand</v-icon>
+                Dexterity: {{savedCharacter[0].dexterity}}/10
+              </p>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <p>
+                <v-icon x-large>mdi-account-voice</v-icon>
+                Speech: {{savedCharacter[0].speech}}/10
+              </p>
+            </v-col>
+            <v-col cols="6">
+              <p>
+                <v-icon x-large>mdi-head-alert</v-icon>
+                Intelligence: {{savedCharacter[0].intelligence}}/10
+              </p>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </v-col>
   </v-layout>
 </template>
 
 <script>
+import {HTTP} from '@/api/http-common';
+
 export default {
   data() {
     return {
@@ -170,9 +205,27 @@ export default {
       submitWithExtraPoints: false,
       submitWithAllPoints: false,
       hasUsedAllPoints: false,
+      savedCharacter: [],
     }
   },
+  created() {
+    this.checkUserCharacter(1)
+
+  },
   methods: {
+    checkUserCharacter: function(userID){
+      HTTP.get(`/user/${userID}`).then(response => {
+        console.log(JSON.stringify(response.data));
+        if(response.data.length > 0){
+          this.savedCharacter = response.data;
+          this.hasCharacter = true;
+        }
+        else {
+          console.log('no char')
+          this.hasCharacter = false;
+        }
+      })
+    },
     checkTotal: function(){
       let totalPoints = 0;
       totalPoints = this.strengthSlider + this.dexSlider + this.speechSlider + this.intelSlider;
@@ -202,7 +255,7 @@ export default {
       if(this.characterName == ''){
         this.characterName = this.generateName()
       }
-      console.log(this.strengthSlider, this.dexSlider, this.speechSlider,  this.intelSlider, this.characterName);
+      //console.log(this.strengthSlider, this.dexSlider, this.speechSlider,  this.intelSlider, this.characterName);
       let data = [{
         "name": this.characterName, 
         "dexterity": this.dexSlider, 
@@ -210,10 +263,29 @@ export default {
         "intelligence": this.intelSlider, 
         "strength": this.strengthSlider
       }];
-      console.log(JSON.stringify(data));
+      this.savedCharacter = data;
+      //TODO: call api here
+
+      HTTP.post('/character/user/1', {
+        "name": this.characterName, 
+        "dexterity": this.dexSlider, 
+        "speech": this.speechSlider, 
+        "intelligence": this.intelSlider, 
+        "strength": this.strengthSlider
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      console.log(JSON.stringify(this.savedCharacter));
+      //reset data
       this.strengthSlider = this.intelSlider = this.dexSlider = this.speechSlider = 5;
       this.totalPointsUsed = 20;
       this.characterName = '';
+      this.hasCharacter = true;
     },
     generateName: function(){
       var name1 = 

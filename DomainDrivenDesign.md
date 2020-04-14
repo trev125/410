@@ -18,16 +18,17 @@
     email (string)
     password (string)
     name (string)
-    currentQuestion (number)
-    character (number)
+    characterID (number)
     
 - Character
+    id (number)
+    userId (number)
     name (string)
     strength (number)
     dex (number)
     speech (number)
     intel (number)
-    otherAttrb (number)
+    currentQuestion (number)
     
 - Bag
     id (number)
@@ -45,7 +46,7 @@
 
 - Items 
     id (number)
-    item (string)
+    name (string)
     question (number)
     strengthBuff (number)
     dexBuff (number)

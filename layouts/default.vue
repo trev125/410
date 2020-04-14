@@ -66,9 +66,9 @@ export default {
           to: '/inspire'
         },
         {
-          icon: 'mdi-account',
-          title: 'Profile',
-          to: '/profile'
+          icon: 'mdi-gamepad-variant',
+          title: 'Game',
+          to: '/game'
         },
         {
           icon: 'mdi-help',
