@@ -51,22 +51,51 @@
             and the game will be completed.
           </p>
         </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            nuxt
-            to="/characterPage"
-          >
-            Create a character
-          </v-btn>
-          <v-spacer />
-          <v-btn
-            color="error"
-            nuxt
-            to="/game"
-          >
-            Continue to game
-          </v-btn>
+        <v-card-actions
+          v-if="savedCharacter.length > 0"
+        >
+            <v-btn
+              color="primary"
+              nuxt
+              to="/characterPage"
+            >
+              View {{savedCharacter[0].name}}
+            </v-btn>
+            <v-spacer />
+            <v-btn
+              color="error"
+              nuxt
+              to="/game"
+            >
+              Continue to game
+            </v-btn>
+        </v-card-actions>
+        <v-card-actions
+          v-else
+        >
+            <v-btn
+              color="primary"
+              nuxt
+              to="/characterPage"
+            >
+              Create a Character
+            </v-btn>
+            <v-spacer />
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }" open-on-hover>
+                <span v-on="on">
+                  <v-btn
+                    color="error"
+                    nuxt
+                    to="/game"
+                    disabled
+                  >
+                    Continue to game
+                  </v-btn>
+                </span>
+              </template>
+              <span>Please create a character before playing</span>
+            </v-tooltip>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -76,11 +105,36 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import {HTTP} from '@/api/http-common';
 
 export default {
+  data() {
+    return {
+      hasCharacter: false,
+      savedCharacter: [],
+    }
+  },
   components: {
     Logo,
     VuetifyLogo
+  },
+  created() {
+    this.checkUserCharacter(2);
+  },
+  methods: {
+    checkUserCharacter: function(userID){
+      HTTP.get(`/user/${userID}`).then(response => {
+        console.log(JSON.stringify(response.data));
+        if(response.data.length > 0){
+          this.savedCharacter = response.data;
+          this.hasCharacter = true;
+        }
+        else {
+          console.log('no char')
+          this.hasCharacter = false;
+        }
+      })
+    },
   }
 }
 </script>

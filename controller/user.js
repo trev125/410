@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
-  host: 'db',
+  host: 'localhost',
   database: 'CYOA',
   password: 'postgres',
   port: 5432,
@@ -14,6 +14,17 @@ const getAllUsers = (request, response) => {
     }
     response.status(200).json(results.rows)
   })
+}
+
+const getCurrentCharacterByUser = (request, response) => {
+  const userId = parseInt(request.params.userId)
+  pool.query('SELECT * FROM "character" where id = (SELECT "characterID" from "user" where id = $1)',
+    [userId], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
 }
 
 
@@ -70,6 +81,7 @@ const updateOneUser = (request, response) => {
 
 module.exports = {
   getAllUsers,
+  getCurrentCharacterByUser,
   addNewUser,
   deleteOneUser,
   updateOneUser

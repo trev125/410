@@ -25,6 +25,7 @@ app.post('/login', login.authenticate)
 
 //User endpoints
 app.get('/user', user.getAllUsers)
+app.get('/user/:userId', user.getCurrentCharacterByUser)
 app.post('/user', user.addNewUser)
 app.delete('/user/:userId', user.deleteOneUser)
 app.put('/user/:userId', user.updateOneUser)
@@ -41,10 +42,12 @@ app.delete('/bag/:characterId/item/:itemId', bag.deleteItemFromBag)
 app.get('/question', question.getAllQuestions)
 app.post('/question', question.addNewQuestion)
 app.delete('/question/:questionId', question.deleteOneQuestion)
+app.get('/question/:questionId', question.getOneQuestion)
 app.put('/question/:questionId', question.updateOneQuestion)
 
 //Answer Endpoints
 app.get('/answer', answer.getAllAnswers)
+app.get('/answer/:questionId', answer.getAllAnswersToQuestion)
 app.post('/answer/question/:questionId', answer.addNewAnswer)
 app.delete('/answer/:answerId', answer.deleteAnswer)
 app.put('/answer/:answerId', answer.updateOneAnswer)

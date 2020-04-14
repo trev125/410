@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
-  host: 'db',
+  host: 'localhost',
   database: 'CYOA',
   password: 'postgres',
   port: 5432,
@@ -12,6 +12,18 @@ const getAllAnswers = (request, response) => {
     if (error) {
       throw error
     }
+    response.status(200).json(results.rows)
+  })
+}
+
+const getAllAnswersToQuestion = (request, response) => {
+  const questionId = parseInt(request.params.questionId)
+
+  pool.query('SELECT * FROM answer WHERE "question" = $1', 
+  [questionId], (error, results) => {
+  if (error) {
+    throw error
+  }
     response.status(200).json(results.rows)
   })
 }
@@ -61,6 +73,7 @@ const updateOneAnswer = (request, response) => {
 
 module.exports = {
   getAllAnswers,
+  getAllAnswersToQuestion,
   addNewAnswer,
   deleteAnswer,
   updateOneAnswer

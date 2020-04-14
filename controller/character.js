@@ -1,10 +1,10 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',
+  host: 'localhost',//change to db for docker
   database: 'CYOA',
   password: 'postgres',
-  port: 5432,
+  port: 5432,//change to 5432 for docker
 })
 
 const getAllCharacters = (request, response) => {
@@ -27,12 +27,13 @@ const getOneCharacter  = (request, response) => {
 }
 
 const addNewCharacter = (request, response) => {
+  console.log(request.body);
   const userId = parseInt(request.params.userId)
-  const name = request.body[0].name
-  const dex = request.body[0].dexterity
-  const spch = request.body[0].speech
-  const intel = request.body[0].intelligence
-  const str = request.body[0].strength
+  const name = request.body.name
+  const dex = request.body.dexterity
+  const spch = request.body.speech
+  const intel = request.body.intelligence
+  const str = request.body.strength
 
   pool.query('INSERT INTO character ("userId", "name", "dexterity", "speech", "intelligence", "strength") VALUES ($1, $2, $3, $4, $5, $6)', 
             [userId, name, dex, spch, intel, str], (error, results) => {
