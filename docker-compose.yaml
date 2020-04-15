@@ -4,7 +4,7 @@ services:
 
   # web:
   #   environment: 
-  #     DATABASE_URL: postgres://postgres:postgres@db:5432/CYOA
+  #     DATABASE_URL: db
   #   build: .
   #   command: npm run dev
   #   ports:

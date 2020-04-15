@@ -56,6 +56,7 @@ app.put('/answer/:answerId', answer.updateOneAnswer)
 
 //Item Endpoints
 app.get('/item', item.getAllItems)
+app.get('/item/:questionId', item.getAllItemsForQuestion)
 app.post('/item', item.addNewItem)
 app.delete('/item/:itemId', item.deleteItem)
 app.put('/item/:itemId', item.updateItem)

@@ -16,6 +16,16 @@ const getAllItems = (request, response) => {
   })
 }
 
+const getAllItemsForQuestion = (request, response) => {
+  const questionId = parseInt(request.params.questionId)
+  pool.query('SELECT * FROM "item" WHERE "question" = $1', [questionId], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 const addNewItem = (request, response) => {
   const name = request.body[0].name
   const qst = request.body[0].question
@@ -72,6 +82,7 @@ const updateItem = (request, response) => {
 
 module.exports = {
   getAllItems,
+  getAllItemsForQuestion,
   addNewItem,
   deleteItem,
   updateItem
