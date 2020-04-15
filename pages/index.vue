@@ -119,7 +119,7 @@ export default {
     VuetifyLogo
   },
   created() {
-    this.checkUserCharacter(2);
+    this.checkUserCharacter(1);
   },
   methods: {
     checkUserCharacter: function(userID){

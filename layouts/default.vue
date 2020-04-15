@@ -31,23 +31,26 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-spacer></v-spacer>
+      <v-btn
+        color="grey"
+        nuxt
+        to="/Login"
+        @click="logout"
+      >
+        Logout
+      </v-btn>
     </v-app-bar>
     <v-content>
       <v-container>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-    </v-navigation-drawer>
   </v-app>
 </template>
 
 <script>
+import axios from "axios"
 export default {
   data () {
     return {
@@ -61,21 +64,6 @@ export default {
           to: '/'
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        },
-        {
-          icon: 'mdi-gamepad-variant',
-          title: 'Game',
-          to: '/game'
-        },
-        {
-          icon: 'mdi-help',
-          title: 'About',
-          to: '/about'
-        },
-        {
           icon: 'mdi-shield',
           title: 'Character',
           to: '/characterPage'
@@ -86,6 +74,13 @@ export default {
       right: true,
       rightDrawer: false,
       title: 'Vuetify.js'
+    }
+  },
+  methods: {
+    logout: function (e) {
+      axios.get("/api/logout").then(() => {
+         window.$nuxt.$router.push("/Login")
+      })
     }
   }
 }

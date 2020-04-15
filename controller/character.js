@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',//change to db for docker
+  host: process.env.DATABASE_URL,//change to db for docker
   database: 'CYOA',
   password: 'postgres',
   port: 5432,//change to 5432 for docker
@@ -27,7 +27,7 @@ const getOneCharacter  = (request, response) => {
 }
 
 const addNewCharacter = (request, response) => {
-  console.log(request.body);
+  console.log('start of req',request.body);
   const userId = parseInt(request.params.userId)
   const name = request.body.name
   const dex = request.body.dexterity
@@ -35,14 +35,27 @@ const addNewCharacter = (request, response) => {
   const intel = request.body.intelligence
   const str = request.body.strength
 
-  pool.query('INSERT INTO character ("userId", "name", "dexterity", "speech", "intelligence", "strength") VALUES ($1, $2, $3, $4, $5, $6)', 
+  pool.query('INSERT INTO character ("userId", "name", "dexterity", "speech", "intelligence", "strength") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
             [userId, name, dex, spch, intel, str], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(201).json(results.rows)
+  })
+}
+
+const updateOneCharacterCurrentQuestion = (request, response) => {
+  const characterId = parseInt(request.params.characterId)
+  const questionId = parseInt(request.params.questionId)
+
+  pool.query('UPDATE character SET "currentQuestion" = $1 WHERE "id" = $2', 
+            [questionId, characterId], (error, results) => {
     if (error) {
       throw error
     }
     //TODO: Add in the correct return ID
     //response.status(201).send(`Character added to user with ID: ${results.id}`)
-    response.status(201).send(`Character added to user with ID: ${userId}`)
+    response.status(201).send(`Character updated with character ID: ${characterId} to be on question ${questionId}`)
   })
 }
 
@@ -85,6 +98,7 @@ module.exports = {
   getAllCharacters,
   addNewCharacter,
   updateOneCharacter,
+  updateOneCharacterCurrentQuestion,
   deleteOneCharacter,
   getOneCharacter
 }
