@@ -44,10 +44,14 @@ export default {
     this.getUserCharacter(1);
   },
   methods: {
-    chooseAnswer: function (id, nextQuestion) {
+    chooseAnswer: function (id, nextQuestionId) {
       console.log('CHOSEN ANSWER ID', id);
-      console.log('NEXT QUESTION TO LOAD', nextQuestion);
-      this.getCurrentQuestion(nextQuestion);
+      console.log('NEXT QUESTION TO LOAD', nextQuestionId);
+      let charId = this.savedCharacter[0].id
+      this.getCurrentQuestion(nextQuestionId);
+      HTTP.put(`/character/${charId}/question/${nextQuestionId}`).then(response => {
+        console.log(JSON.stringify(response.data));
+      })
     },
     getUserCharacter: function(userID){
       HTTP.get(`/user/${userID}`).then(response => {

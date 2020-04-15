@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',
+  host: process.env.DATABASE_URL,
   database: 'CYOA',
   password: 'postgres',
   port: 5432,
@@ -27,15 +27,29 @@ const getCurrentCharacterByUser = (request, response) => {
     })
 }
 
+const addCharToUser = (request, response) => {
+  const userId = parseInt(request.params.userId)
+  const charId = parseInt(request.params.characterId)
+  pool.query('UPDATE "user" SET "characterID" = $1 WHERE "id" = $2', 
+    [charId, userId], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(201).send(`User ${userId} updated with character ID: ${charId}`)
+  })
+}
+
 
 const addNewUser = (request, response) => {
-  const email = request.body[0].email
-  const password = request.body[0].password
-  const name = request.body[0].name
-  const characterID = request.body[0].characterID
+  //console.log(request)
+  console.log(request.body)
+  const email = request.body.email
+  const password = request.body.password
+  const name = request.body.name
+  //const characterID = request.body[0].characterID
 
-  pool.query('INSERT INTO "user" ("email", "password", "name", "characterID") VALUES ($1, md5($2), $3, $4)', 
-            [email, password, name, characterID], (error, results) => {
+  pool.query('INSERT INTO "user" ("email", "password", "name") VALUES ($1, md5($2), $3)', 
+            [email, password, name], (error, results) => {
     if (error) {
       throw error
     }
@@ -82,6 +96,7 @@ const updateOneUser = (request, response) => {
 module.exports = {
   getAllUsers,
   getCurrentCharacterByUser,
+  addCharToUser,
   addNewUser,
   deleteOneUser,
   updateOneUser

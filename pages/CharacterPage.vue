@@ -274,7 +274,14 @@ export default {
         "strength": this.strengthSlider
       })
       .then(function (response) {
-        console.log(response);
+        console.log(JSON.stringify(response.data));
+        console.log(response.data[0]);
+        console.log(response.data[0].id);
+        let charId = response.data[0].id;
+        let userId = 1
+        HTTP.put(`/user/${userId}/character/${charId}`).then(response => {
+          console.log(JSON.stringify(response.data));
+        })
       })
       .catch(function (error) {
         console.log(error);
